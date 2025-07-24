@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: projecteren-pod
+spec:
+  containers:
+    - name: projecteren
+      image: projecteren:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
