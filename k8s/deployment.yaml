@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projecteren-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projecteren
+  template:
+    metadata:
+      labels:
+        app: projecteren
+    spec:
+      containers:
+        - name: projecteren
+          image: projecteren:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: spring-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spring-db-secret
+                  key: password
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-app-config
+                  key: SPRING_DATASOURCE_URL
+            - name: LOGGING_LEVEL_ROOT
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-app-config
+                  key: LOGGING_LEVEL_ROOT
