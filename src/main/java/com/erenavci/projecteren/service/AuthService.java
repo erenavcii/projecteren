@@ -35,10 +35,12 @@ public class AuthService {
                 .badRequest()
                 .body("Error: Username is already taken!");
         }
+
         User user = new User();
         user.setUsername(req.getUsername());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setPassword(passwordEncoder.encode(req.getPassword())); // 🔥 burası düzeldi
         userRepository.save(user);
+
         return ResponseEntity.ok("User registered successfully!");
     }
 
@@ -46,7 +48,7 @@ public class AuthService {
         try {
             authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    req.getUsername(), 
+                    req.getUsername(),
                     req.getPassword()
                 )
             );
@@ -55,6 +57,7 @@ public class AuthService {
                 .status(401)
                 .build();
         }
+
         String token = jwtUtil.generateToken(req.getUsername());
         JwtResponse resp = new JwtResponse(token, "Bearer", req.getUsername());
         return ResponseEntity.ok(resp);
