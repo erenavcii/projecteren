@@ -12,3 +12,4 @@ Deployment, Secret ve ConfigMap üzerinden ortam değişkenlerini okumaktadır.
 
 
 
+<!-- workflow trigger -->
