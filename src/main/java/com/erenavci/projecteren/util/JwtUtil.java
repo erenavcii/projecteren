@@ -11,36 +11,38 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // application.properties içine ekleyeceğimiz değerler
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    // Token üretme
     public String generateToken(String username) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        System.out.println("🔐 Token üretildi: " + token);
+        return token;
     }
 
-    // Token içindeki kullanıcı adını alma
     public String getUsernameFromToken(String token) {
-        return parseClaims(token).getSubject();
+        String username = parseClaims(token).getSubject();
+        System.out.println("📛 Token'dan alınan kullanıcı adı: " + username);
+        return username;
     }
 
-    // Token geçerliliğini kontrol etme
     public boolean validateToken(String token) {
         try {
             parseClaims(token);
+            System.out.println("✅ Token geçerli.");
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            // Hatalı, süresi dolmuş veya değiştirilmiş token
+            System.out.println("❌ Token geçersiz: " + e.getMessage());
             return false;
         }
     }
